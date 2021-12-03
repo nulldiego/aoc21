@@ -1,10 +1,11 @@
 package main
 
 import (
-	"aoc21/utils/files"
-	"aoc21/utils/mapper"
 	"fmt"
 	"log"
+
+	"aoc21/utils/files"
+	"aoc21/utils/mapper"
 )
 
 func main() {

@@ -1,11 +1,12 @@
 package main
 
 import (
-	"aoc21/utils/files"
 	"fmt"
 	"log"
 	"strconv"
 	"time"
+
+	"aoc21/utils/files"
 )
 
 func main() {

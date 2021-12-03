@@ -24,15 +24,5 @@ func ReadFile(day int, delimiter string) []string {
 	}
 
 	fileContent := string(file)
-	slicedContent := strings.Split(fileContent, delimiter)
-
-	if delimiter == "\n" {
-		// there is a new line at the end of the input file, the last row is removed
-		return slicedContent[:len(slicedContent) - 1]
-	} else {
-		// the last char is removed (the extra newline)
-		lastElement := slicedContent[len(slicedContent) - 1]
-		slicedContent[len(slicedContent) - 1] = lastElement[:len(lastElement) - 1]
-		return slicedContent
-	}
+	return strings.Split(fileContent, delimiter)
 }

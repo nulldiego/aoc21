@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	input := files.ReadFile(3, "\n")
+	input := files.ReadFile(3, "\r\n")
 
 	// Part 1
 	start := time.Now()
@@ -32,11 +32,11 @@ func main() {
 }
 
 func calculatePowerConsumption(input []string) (int, error) {
-	lineLength := len(input[0]) - 1
+	lineLength := len(input[0])
 	zeros := make([]int, lineLength)
 	ones := make([]int, lineLength)
 	for _, line := range input {
-		for i, char := range line[:lineLength] {
+		for i, char := range line {
 			if char == '0' {
 				zeros[i]++
 				continue
@@ -60,8 +60,6 @@ func calculatePowerConsumption(input []string) (int, error) {
 }
 
 func calculateLifeSupport(input []string) (int, error) {
-	lineLength := len(input[0]) - 1
-
 	filteredOxygen := make([]string, len(input))
 	filteredCo2 := make([]string, len(input))
 	copy(filteredOxygen, input)
@@ -119,7 +117,7 @@ func calculateLifeSupport(input []string) (int, error) {
 		index++
 	}
 
-	oxy, _ := strconv.ParseInt(filteredOxygen[0][:lineLength], 2, 64)
-	co2, _ := strconv.ParseInt(filteredCo2[0][:lineLength], 2, 64)
+	oxy, _ := strconv.ParseInt(filteredOxygen[0], 2, 64)
+	co2, _ := strconv.ParseInt(filteredCo2[0], 2, 64)
 	return int(oxy * co2), nil
 }

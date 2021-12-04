@@ -10,16 +10,18 @@ import (
 )
 
 func main() {
+	start := time.Now()
 	input := files.ReadFile(3, "\r\n")
+	fmt.Printf("Data readed in %v \n\n", time.Since(start))
 
 	// Part 1
-	start := time.Now()
+	start = time.Now()
 	solution, err := calculatePowerConsumption(input)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println(solution)
-	fmt.Printf("Part 1 solved in %v \n", time.Since(start))
+	fmt.Printf("Part 1 solved in %v \n\n", time.Since(start))
 
 	// Part 2
 	start = time.Now()
@@ -28,20 +30,18 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println(solution)
-	fmt.Printf("Part 2 solved in %v \n", time.Since(start))
+	fmt.Printf("Part 2 solved in %v \n\n", time.Since(start))
 }
 
 func calculatePowerConsumption(input []string) (int, error) {
+	half := len(input) / 2
 	lineLength := len(input[0])
 	zeros := make([]int, lineLength)
-	ones := make([]int, lineLength)
 	for _, line := range input {
 		for i, char := range line {
 			if char == '0' {
 				zeros[i]++
-				continue
 			}
-			ones[i]++
 		}
 	}
 
@@ -49,7 +49,7 @@ func calculatePowerConsumption(input []string) (int, error) {
 	for i := 0; i < lineLength; i++ {
 		gamma <<= 1
 		epsilon <<= 1
-		if ones[i] > zeros[i] {
+		if half > zeros[i] {
 			gamma |= 1
 			continue
 		}
@@ -59,18 +59,14 @@ func calculatePowerConsumption(input []string) (int, error) {
 	return gamma * epsilon, nil
 }
 
-func calculateLifeSupport(input []string) (int, error) {
-	filteredOxygen := make([]string, len(input))
-	filteredCo2 := make([]string, len(input))
-	copy(filteredOxygen, input)
-	copy(filteredCo2, input)
-
+func calculateParameter(input []string, condition func(rune, rune) bool) (int64, error) {
+	filtered := input
 	index := 0
-	for len(filteredOxygen) > 1 {
+	for len(filtered) > 1 {
 		var remaining []string
-		mostCommonBit := '1'
+		mostCommonBit := '1' // if there is a tie, we consider '1' as the most common
 		var ones, zeros int
-		for _, line := range filteredOxygen {
+		for _, line := range filtered {
 			if rune(line[index]) == '0' {
 				zeros++
 				continue
@@ -82,42 +78,28 @@ func calculateLifeSupport(input []string) (int, error) {
 			mostCommonBit = '0'
 		}
 
-		for _, line := range filteredOxygen {
-			if rune(line[index]) == mostCommonBit {
+		for _, line := range filtered {
+			if condition(rune(line[index]), mostCommonBit) {
 				remaining = append(remaining, line)
 			}
 		}
-		filteredOxygen = remaining
+		filtered = remaining
 		index++
 	}
+	result, _ := strconv.ParseInt(filtered[0], 2, 32)
+	return result, nil
+}
 
-	index = 0
-	for len(filteredCo2) > 1 {
-		var remaining []string
-		mostCommonBit := '1'
-		var ones, zeros int
-		for _, line := range filteredCo2 {
-			if rune(line[index]) == '0' {
-				zeros++
-				continue
-			}
-			ones++
-		}
+func sameRune(a, b rune) bool {
+	return a == b
+}
 
-		if zeros > ones {
-			mostCommonBit = '0'
-		}
+func difRune(a, b rune) bool {
+	return a != b
+}
 
-		for _, line := range filteredCo2 {
-			if rune(line[index]) != mostCommonBit {
-				remaining = append(remaining, line)
-			}
-		}
-		filteredCo2 = remaining
-		index++
-	}
-
-	oxy, _ := strconv.ParseInt(filteredOxygen[0], 2, 64)
-	co2, _ := strconv.ParseInt(filteredCo2[0], 2, 64)
+func calculateLifeSupport(input []string) (int, error) {
+	oxy, _ := calculateParameter(input, sameRune)
+	co2, _ := calculateParameter(input, difRune)
 	return int(oxy * co2), nil
 }

@@ -25,7 +25,7 @@ func main() {
 
 	// Part 1
 	start = time.Now()
-	solution, err := countOverlaps(lines)
+	solution, err := countOverlaps(lines, false)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -34,57 +34,12 @@ func main() {
 
 	// Part 2
 	start = time.Now()
-	solution, err = countOverlapsWithDiagonals(lines)
+	solution, err = countOverlaps(lines, true)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println(solution)
 	fmt.Printf("Part 2 solved in %v \n\n", time.Since(start))
-}
-
-func countOverlaps(lines [][][]int) (int, error) {
-	diagram := make(map[string]int)
-	for _, line := range lines {
-		if line[0][0] == line[1][0] { // position 1 x == position 2 x
-			x := line[0][0]
-			from, to := line[0][1], line[1][1]
-			if line[0][1] > line[1][1] {
-				from = line[1][1]
-				to = line[0][1]
-			}
-			for y := from; y <= to; y++ {
-				coord := fmt.Sprintf("%d,%d", x, y)
-				if _, found := diagram[coord]; found {
-					diagram[coord]++
-				} else {
-					diagram[coord] = 1
-				}
-			}
-		}
-		if line[0][1] == line[1][1] { // position 1 y == position 2 y
-			y := line[0][1]
-			from, to := line[0][0], line[1][0]
-			if line[0][0] > line[1][0] {
-				from = line[1][0]
-				to = line[0][0]
-			}
-			for x := from; x <= to; x++ {
-				coord := fmt.Sprintf("%d,%d", x, y)
-				if _, found := diagram[coord]; found {
-					diagram[coord]++
-				} else {
-					diagram[coord] = 1
-				}
-			}
-		}
-	}
-	var count int
-	for _, overlap := range diagram {
-		if overlap > 1 {
-			count++
-		}
-	}
-	return count, nil
 }
 
 func maxInt(a, b int) int {
@@ -101,10 +56,14 @@ func abs(a int) int {
 	return a
 }
 
-func countOverlapsWithDiagonals(lines [][][]int) (int, error) {
+func countOverlaps(lines [][][]int, diagonals bool) (int, error) {
 	diagram := make(map[string]int)
+	var count int
 	for _, line := range lines {
 		fromX, toX, fromY, toY := line[0][0], line[1][0], line[0][1], line[1][1] // fromY and toY always correspond to its x coordinate
+		if !diagonals && fromX != toX && fromY != toY {
+			continue
+		}
 		if fromX > toX {
 			fromX, toX = toX, fromX
 			fromY, toY = toY, fromY
@@ -123,15 +82,12 @@ func countOverlapsWithDiagonals(lines [][][]int) (int, error) {
 			coord := fmt.Sprintf("%d,%d", x, y)
 			if _, found := diagram[coord]; found {
 				diagram[coord]++
+				if diagram[coord] == 2 {
+					count++
+				}
 			} else {
 				diagram[coord] = 1
 			}
-		}
-	}
-	var count int
-	for _, overlap := range diagram {
-		if overlap > 1 {
-			count++
 		}
 	}
 	return count, nil

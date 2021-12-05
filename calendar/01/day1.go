@@ -15,7 +15,7 @@ func main() {
 
 	// Part 1
 	start := time.Now()
-	solution, err := countIncreases(input)
+	solution, err := countIncreasesByWindow(input, 1)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -32,26 +32,14 @@ func main() {
 	fmt.Printf("Part 2 solved in %v \n", time.Since(start))
 }
 
-func countIncreases(input []int) (int, error) {
-	var count int
-	for i, depth := range input[1:] {
-		if depth > input[i] {
-			count++
-		}
-	}
-
-	return count, nil
-}
-
 func countIncreasesByWindow(input []int, windowSize int) (int, error) {
 	var prevWindow, nextWindow, count int
-	for i, depth := range input {
-		if i < windowSize {
-			prevWindow += depth
-			continue
-		}
-		nextWindow = depth + input[i-1] + input[i-2]
-		if prevWindow < nextWindow {
+	for _, depth := range input[:windowSize] {
+		prevWindow += depth
+	}
+	for i, depth := range input[windowSize:] {
+		nextWindow = prevWindow - input[i] + depth
+		if nextWindow > prevWindow {
 			count++
 		}
 		prevWindow = nextWindow

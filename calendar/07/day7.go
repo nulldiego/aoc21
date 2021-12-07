@@ -3,11 +3,12 @@ package main
 import (
 	"fmt"
 	"log"
-	"sort"
+	"math"
 	"time"
 
 	"aoc21/utils/files"
 	"aoc21/utils/mapper"
+	"aoc21/utils/maths"
 )
 
 func main() {
@@ -17,7 +18,7 @@ func main() {
 
 	// Part 1
 	start = time.Now()
-	solution, err := minFuelToAlign(input)
+	solution, err := minFuelConstant(input)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -26,7 +27,7 @@ func main() {
 
 	// Part 2
 	start = time.Now()
-	solution, err = minFuelToAlign2(input)
+	solution, err = minFuelIncremental(input)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -34,39 +35,24 @@ func main() {
 	fmt.Printf("Part 2 solved in %v \n\n", time.Since(start))
 }
 
-func abs(a int) int {
-	if a < 0 {
-		return -a
-	}
-	return a
+func minFuelConstant(input []int) (int, error) {
+	return sumFuel(input, maths.Median(input), func(distance int) int {
+		return distance
+	}), nil
 }
 
-func minFuelToAlign(input []int) (int, error) {
-	var minFuel int
-	sort.Ints(input)
-	for position := input[0]; position <= input[len(input)-1]; position++ {
-		fuel := 0
-		for _, crab := range input {
-			fuel += abs(position - crab)
-		}
-		if position == input[0] || fuel < minFuel {
-			minFuel = fuel
-		}
+func minFuelIncremental(input []int) (int, error) {
+	target := maths.Mean(input)
+	fuelCost := func(distance int) int {
+		return distance * (distance + 1) / 2
 	}
-	return minFuel, nil
+	return maths.MinInt(sumFuel(input, int(math.Ceil(target)), fuelCost), sumFuel(input, int(math.Floor(target)), fuelCost)), nil
 }
 
-func minFuelToAlign2(input []int) (int, error) {
-	var minFuel int
-	sort.Ints(input)
-	for position := input[0]; position <= input[len(input)-1]; position++ {
-		fuel := 0
-		for _, crab := range input {
-			fuel += abs(position-crab) * (abs(position-crab) + 1) / 2
-		}
-		if position == input[0] || fuel < minFuel {
-			minFuel = fuel
-		}
+func sumFuel(input []int, target int, fuelCost func(distance int) int) int {
+	var fuel int
+	for _, crab := range input {
+		fuel += fuelCost(maths.Abs(target - crab))
 	}
-	return minFuel, nil
+	return fuel
 }

@@ -8,6 +8,7 @@ import (
 
 	"aoc21/utils/files"
 	"aoc21/utils/mapper"
+	"aoc21/utils/maths"
 )
 
 func main() {
@@ -42,20 +43,6 @@ func main() {
 	fmt.Printf("Part 2 solved in %v \n\n", time.Since(start))
 }
 
-func maxInt(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
-
-func abs(a int) int {
-	if a < 0 {
-		return -a
-	}
-	return a
-}
-
 func countOverlaps(lines [][][]int, diagonals bool) (int, error) {
 	diagram := make(map[string]int)
 	var count int
@@ -68,7 +55,7 @@ func countOverlaps(lines [][][]int, diagonals bool) (int, error) {
 			fromX, toX = toX, fromX
 			fromY, toY = toY, fromY
 		}
-		distance := maxInt(abs(toX-fromX), abs(toY-fromY))
+		distance := maths.MaxInt(maths.Abs(toX-fromX), maths.Abs(toY-fromY))
 		for sum := 0; sum <= distance; sum++ {
 			x, y := fromX, fromY
 			if fromX != toX {

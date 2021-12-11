@@ -84,7 +84,7 @@ func multiplyAutocompletes(input []string) (int, error) {
 		}
 		if !error {
 			var sum int
-			for i, _ := range opened {
+			for i := range opened {
 				sum = sum * 5
 				sum += scores[opened[len(opened)-i-1]]
 			}

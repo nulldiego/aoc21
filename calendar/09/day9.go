@@ -11,17 +11,9 @@ import (
 	"aoc21/utils/mapper"
 )
 
-func toIntMatrix(input []string) [][]int {
-	result := make([][]int, len(input))
-	for i, line := range input {
-		result[i] = mapper.ToIntSlice(strings.Split(line, ""))
-	}
-	return result
-}
-
 func main() {
 	start := time.Now()
-	input := toIntMatrix(files.ReadFile(9, "\r\n"))
+	input := mapper.ToIntMatrix(files.ReadFile(9, "\r\n"), "")
 	fmt.Printf("Data readed in %v \n\n", time.Since(start))
 
 	// Part 1

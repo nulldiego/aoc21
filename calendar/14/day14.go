@@ -33,7 +33,7 @@ func main() {
 
 	// Part 1
 	start = time.Now()
-	solution, err := countAfter10Steps(starting, rules)
+	solution, err := countAfterSteps(starting, rules, 10)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -42,7 +42,7 @@ func main() {
 
 	// Part 2
 	start = time.Now()
-	solution, err = countAfter40Steps(starting, rules)
+	solution, err = countAfterSteps(starting, rules, 40)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -50,7 +50,7 @@ func main() {
 	fmt.Printf("Part 2 solved in %v \n\n", time.Since(start))
 }
 
-func countAfter40Steps(starting string, rules map[string]string) (int, error) {
+func countAfterSteps(starting string, rules map[string]string, steps int) (int, error) {
 	qty := map[string]int{}
 	for _, letter := range strings.Split(starting, "") {
 		qty[letter]++
@@ -66,7 +66,7 @@ func countAfter40Steps(starting string, rules map[string]string) (int, error) {
 	for k, v := range qtyPairs {
 		qtyPairsCopy[k] = v
 	}
-	for i := 0; i < 40; i++ {
+	for i := 0; i < steps; i++ {
 		qtyPairs = map[string]int{}
 		for k, v := range qtyPairsCopy {
 			qtyPairs[k] = v
@@ -77,52 +77,6 @@ func countAfter40Steps(starting string, rules map[string]string) (int, error) {
 				qtyPairsCopy[string(key[0])+rule] += qtyPair
 				qtyPairsCopy[rule+string(key[1])] += qtyPair
 				qty[rule] += qtyPair
-			}
-		}
-	}
-
-	var min, max int
-	for _, qt := range qty {
-		if min == 0 && max == 0 {
-			min = qt
-			max = qt
-			continue
-		}
-		if min > qt {
-			min = qt
-		}
-		if max < qt {
-			max = qt
-		}
-	}
-	return max - min, nil
-}
-
-func countAfter10Steps(starting string, rules map[string]string) (int, error) {
-	qty := map[string]int{}
-	for _, letter := range strings.Split(starting, "") {
-		if _, found := qty[letter]; found {
-			qty[letter] = qty[letter] + 1
-		} else {
-			qty[letter] = 1
-		}
-	}
-
-	result := starting
-	resultCopy := result
-	for i := 0; i < 10; i++ {
-		result := resultCopy
-		for i, letter := range strings.Split(result, "")[1:] {
-			lookUp := string(result[i]) + string(letter)
-			if rule, found := rules[lookUp]; found {
-				idx := strings.Index(resultCopy, lookUp)
-				resultCopy = resultCopy[:idx+1] + rule + resultCopy[idx+1:]
-
-				if _, found := qty[rule]; found {
-					qty[rule] = qty[rule] + 1
-				} else {
-					qty[rule] = 1
-				}
 			}
 		}
 	}

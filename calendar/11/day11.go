@@ -34,31 +34,28 @@ func main() {
 	fmt.Printf("Part 2 solved in %v \n\n", time.Since(start))
 }
 
-type xy struct {
-	x, y int
-}
+func flash(input [][]int, flashed map[[2]int]bool) map[[2]int]bool {
+	var flashedRightNow [][2]int
 
-func flash(input [][]int, flashed map[xy]xy) map[xy]xy {
-	flashedRightNow := make(map[xy]xy, 100)
-	iDirection := [8]int{-1, 1, 0, 0, -1, -1, 1, 1} // up, down, left, right, up-left, up-right, down-left, down-right
-	jDirection := [8]int{0, 0, -1, 1, -1, 1, -1, 1} // up, down, left, right, up-left, up-right, down-left, down-right
 	for i, row := range input {
 		for j, num := range row {
 			if num > 9 {
-				if _, ok := flashed[xy{x: j, y: i}]; !ok {
+				ij := [2]int{i, j}
+				if !flashed[ij] {
 					input[i][j] = 0
-					flashed[xy{x: j, y: i}] = xy{x: j, y: i}
-					flashedRightNow[xy{x: j, y: i}] = xy{x: j, y: i}
+					flashed[ij] = true
+					flashedRightNow = append(flashedRightNow, ij)
 				}
 			}
 		}
 	}
 
+	directions := [8][2]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}} // up, down, left, right, up-left, up-right, down-left, down-right
 	for _, point := range flashedRightNow {
-		for moveIdx, iMove := range iDirection {
-			iPos, jPos := point.y+iMove, point.x+jDirection[moveIdx]
+		for _, move := range directions {
+			iPos, jPos := point[0]+move[0], point[1]+move[1]
 			if 0 <= iPos && iPos < len(input) && 0 <= jPos && jPos < len(input[0]) {
-				if _, found := flashed[xy{x: jPos, y: iPos}]; !found {
+				if !flashed[[2]int{iPos, jPos}] {
 					input[iPos][jPos] = input[iPos][jPos] + 1
 				}
 			}
@@ -75,7 +72,7 @@ func countFlashes(input [][]int, step int) (int, error) {
 	var count int
 
 	for i := 0; i < step; i++ {
-		flashed := make(map[xy]xy, 100)
+		flashed := make(map[[2]int]bool, 100)
 		for i, row := range input {
 			for j, num := range row {
 				input[i][j] = num + 1
@@ -92,7 +89,7 @@ func stepsUntilSync(input [][]int) (int, error) {
 
 	for true {
 		count++
-		flashed := make(map[xy]xy, 100)
+		flashed := make(map[[2]int]bool, 100)
 		for i, row := range input {
 			for j, num := range row {
 				input[i][j] = num + 1

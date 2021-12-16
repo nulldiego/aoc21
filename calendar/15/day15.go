@@ -21,7 +21,7 @@ func buildGraph(input [][]int) (*graph.Mutable, int) {
 	// 20 21 22 ...
 	lenRow := len(input[0])
 	for i, row := range input {
-		for j, _ := range row {
+		for j := range row {
 			pos++
 			for _, move := range directions {
 				iPos, jPos := i+move[0], j+move[1]

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"sort"
-	"strconv"
 	"strings"
 	"time"
 
@@ -12,20 +11,6 @@ import (
 	"aoc21/utils/mapper"
 	"aoc21/utils/maths"
 )
-
-func mustAtoi(input string) int {
-	res, _ := strconv.Atoi(input)
-	return res
-}
-
-func buildRules(input []string) map[string]string {
-	res := map[string]string{}
-	for _, line := range input {
-		rule := strings.Split(line, " -> ")
-		res[rule[0]] = rule[1]
-	}
-	return res
-}
 
 func main() {
 	start := time.Now()
@@ -83,7 +68,7 @@ func shootsTarget(x, y int, xRange, yRange []int) bool {
 		yPos += yVel
 		yVel--
 
-		if xVel == 0 && xPos < xRange[0] {
+		if xVel == 0 && (xPos < xRange[0] || xPos > xRange[1]) {
 			return false
 		} else if xVel > 0 {
 			xVel--

@@ -12,6 +12,7 @@ require (
 	github.com/google/go-cmp v0.5.6 // indirect
 	github.com/keybase/go-keychain v0.0.0-20200502122510-cda31fe0c86d // indirect
 	github.com/sergi/go-diff v1.1.0 // indirect
+	github.com/thoas/go-funk v0.9.1 // indirect
 	github.com/yourbasic/graph v0.0.0-20210606180040-8ecfec1c2869 // indirect
 	github.com/zalando/go-keyring v0.1.0 // indirect
 	golang.org/x/crypto v0.0.0-20201016220609-9e8e0b390897 // indirect

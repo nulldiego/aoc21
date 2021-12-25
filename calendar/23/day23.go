@@ -248,7 +248,7 @@ func main() {
 	fmt.Println(solution)
 	fmt.Printf("Part 1 solved in %v \n\n", time.Since(start))
 
-	// // Part 2
+	// Part 2
 	start = time.Now()
 	input.rooms[0] = []string{input.rooms[0][0], "D", "D", input.rooms[0][1]}
 	input.rooms[1] = []string{input.rooms[1][0], "C", "B", input.rooms[1][1]}
